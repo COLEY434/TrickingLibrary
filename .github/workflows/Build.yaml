@@ -15,6 +15,12 @@ jobs:
         run: pwd
       - name: List fields in the directory
         run: ls
+      - name: Pull Code
+        uses: actions/checkout@v2    
+      - name: Check Dotnet Cli
+        run: dotnet
+      - name: Check Npm Cli
+        run: npm 
         # - name: Hello world
       #  uses: actions/hello-world-javascript-action@v1
       #  with:
