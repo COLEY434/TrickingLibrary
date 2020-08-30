@@ -18,9 +18,11 @@ jobs:
       - name: Pull Code
         uses: actions/checkout@v2    
       - name: Check Dotnet Cli
-        run: dotnet
+        run: dotnet build
+      - name: List fields in the directory
+        run: ls TrickingLibrary.Api/ -R
       - name: Check Npm Cli
-        run: npm 
+        run: npm -v
         # - name: Hello world
       #  uses: actions/hello-world-javascript-action@v1
       #  with:
