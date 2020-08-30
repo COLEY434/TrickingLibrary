@@ -9,13 +9,15 @@ jobs:
     name: Build the app
     runs-on: ubuntu-latest
     steps:
-     # - name: Hello world
+      - name: Pull Code
+        uses: actions/checkout@v2    
+      - name: print current directory
+        run: pwd
+      - name: List fields in the directory
+        run: ls
+        # - name: Hello world
       #  uses: actions/hello-world-javascript-action@v1
       #  with:
        #   who-to-greet: 'Mona the Octocat'
        # id: hello
       # This step prints an output (time) from the previous step's action.
-      - name: print current directory
-        run: pwd
-      - name: List fields in the directory
-        run: ls
