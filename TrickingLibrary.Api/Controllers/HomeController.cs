@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TrickingLibrary.Api.Controllers
 {
-    [Produces("application/json")]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class HomeController : ControllerBase
     {
         [HttpGet("Name")]
-        public string Boy()
+        public IActionResult Boy()
         {
-            return "Now, i am here";
+            return Ok("Collins  the good guy");
         }
     }
 }

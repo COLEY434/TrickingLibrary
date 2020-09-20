@@ -29,7 +29,7 @@ namespace TrickingLibrary.Api
                                             .AllowAnyMethod());
               
             });
-
+            services.AddSingleton<TrickStore>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
