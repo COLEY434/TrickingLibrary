@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,12 @@ namespace TrickingLibrary.Api.Controllers
         {
             _env = env;
         }
-
+        [HttpGet("{video}")]
+        public IActionResult GetVideo(string video)
+        {
+            var savePath = Path.Combine(_env.WebRootPath, video);
+            return new FileStreamResult(new FileStream(savePath, FileMode.Open, FileAccess.Read), "video/*");
+        }
         public async Task<IActionResult> UploadVideo([FromForm] IFormFile video)
         {
             var mime = video.FileName.Split('.').Last();
@@ -30,7 +36,7 @@ namespace TrickingLibrary.Api.Controllers
             {
                await video.CopyToAsync(fileStream);
             }
-                return Ok();
+                return Ok(fileName);
         }
     }
 }
