@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TrickingLibrary.Api.Models;
+using TrickingLibrary.Data;
 
 namespace TrickingLibrary.Api.Controllers
 {
@@ -12,41 +13,62 @@ namespace TrickingLibrary.Api.Controllers
     [ApiController]
     public class TricksController : ControllerBase
     {
-        private readonly TrickStore _trickStore;
+        private readonly AppDbContext _dbContext;
 
-        public TricksController(TrickStore trickStore)
+        public TricksController(AppDbContext dbContext)
         {
-            _trickStore = trickStore;
+            _dbContext = dbContext;
         }
 
         //api/tricks
         [HttpGet]
-        public IActionResult All() => Ok(_trickStore.GetAllTricks());
+        public IEnumerable<Trick> All() => _dbContext.Tricks.ToList();
 
         //api/tricks/{Id}
         [HttpGet("{Id}")]
-        public IActionResult Get(int Id) => Ok(_trickStore.GetAllTricks().FirstOrDefault(x => x.Id.Equals(Id)));
+        public Trick Get(string Id) => _dbContext.Tricks.FirstOrDefault(x => x.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase));
+
+        //api/tricks/{Id}/submissions
+        [HttpGet("{trickId}/submissions")]
+        public IEnumerable<Submission> ListSubmissionsForTrick(string trickId)
+        {
+           var tricks = _dbContext.Submissions.Where(x => x.TrickId.Equals(trickId, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            return tricks;
+        }
+          
 
         //api/tricks
         [HttpPost]
-        public IActionResult Create([FromBody] Tricks trick)
+        public async Task<Trick> Create([FromBody] Trick trick)
         {
-            _trickStore.AddTricks(trick);
-            return Ok();
+            trick.Id = trick.Name.Replace(" ", "-").ToLowerInvariant();
+            _dbContext.Add(trick);
+           await  _dbContext.SaveChangesAsync();
+            return trick;
         }
 
         //api/tricks
         [HttpPut]
-        public IActionResult Update([FromBody] Tricks trick)
+        public async Task<Trick> Update([FromBody] Trick trick)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrEmpty(trick.Id))
+            {
+                return null;
+            }
+
+            _dbContext.Add(trick);
+            await _dbContext.SaveChangesAsync();
+            return trick;
         }
 
         //api/tricks/{Id}
         [HttpDelete("{Id}")]
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(string Id)
         {
-            throw new NotImplementedException();
+            var trick = _dbContext.Tricks.FirstOrDefault(x => x.Id.Equals(Id));
+            trick.Deleted = true;
+            await _dbContext.SaveChangesAsync();
+            return Ok();
         }
     }
 }

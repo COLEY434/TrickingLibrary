@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.IO;
+using TrickingLibrary.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TrickingLibrary.Api
 {
@@ -29,7 +31,7 @@ namespace TrickingLibrary.Api
                                             .AllowAnyMethod());
               
             });
-            services.AddSingleton<TrickStore>();
+            services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("Dev"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

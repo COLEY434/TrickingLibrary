@@ -8,18 +8,18 @@ namespace TrickingLibrary.Api
 {
     public class TrickStore
     {
-        private List<Tricks> _Tricks;
-        public TrickStore()
-        {
-            _Tricks = new List<Tricks>();
-        }
+        //private List<Tricks> _Tricks;
+        //public TrickStore()
+        //{
+        //    _Tricks = new List<Tricks>();
+        //}
 
-        public IEnumerable<Tricks> GetAllTricks() => _Tricks;
+        //public IEnumerable<Tricks> GetAllTricks() => _Tricks;
 
-        public void AddTricks(Tricks trick)
-        {
-            trick.Id = _Tricks.Count + 1;
-            _Tricks.Add(trick);
-        }
+        //public void AddTricks(Tricks trick)
+        //{
+        //    trick.Id = _Tricks.Count + 1;
+        //    _Tricks.Add(trick);
+        //}
     }
 }
