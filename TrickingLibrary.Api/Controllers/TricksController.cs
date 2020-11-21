@@ -22,7 +22,11 @@ namespace TrickingLibrary.Api.Controllers
 
         //api/tricks
         [HttpGet]
-        public IEnumerable<Trick> All() => _dbContext.Tricks.ToList();
+        public IEnumerable<Trick> All()
+        {
+            var tricks = _dbContext.Tricks.ToList();
+            return tricks;
+        }
 
         //api/tricks/{Id}
         [HttpGet("{Id}")]
