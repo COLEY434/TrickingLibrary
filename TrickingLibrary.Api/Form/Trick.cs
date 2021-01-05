@@ -4,15 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using TrickingLibrary.Models;
 
-namespace TrickingLibrary.Api.Models
+namespace TrickingLibrary.Api.Form
 {
-    public class Trick : BaseModel<string>
+    public class TrickForm
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Difficulty { get; set; }
-        public IList<TrickRelationship> Prerequisites { get; set; }
-        public IList<TrickRelationship> Progressions { get; set; }
-        public IList<TrickCategory> TrickCategories { get; set; }
+        public IEnumerable<string> Categories { get; set; }
     }
 }

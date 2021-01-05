@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TrickingLibrary.Api.Form;
 using TrickingLibrary.Api.Models;
+using TrickingLibrary.Api.ViewModels;
 using TrickingLibrary.Data;
 
 namespace TrickingLibrary.Api.Controllers
@@ -22,15 +24,20 @@ namespace TrickingLibrary.Api.Controllers
 
         //api/tricks
         [HttpGet]
-        public IEnumerable<Trick> All()
+        public IEnumerable<object> All()
         {
-            var tricks = _dbContext.Tricks.ToList();
+            var tricks = _dbContext.Tricks.Select(TrickViewModels.Default).ToList();
             return tricks;
         }
 
         //api/tricks/{Id}
         [HttpGet("{Id}")]
-        public Trick Get(string Id) => _dbContext.Tricks.FirstOrDefault(x => x.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase));
+        public object Get(string Id) => 
+            _dbContext.Tricks
+                      .Where(x => x.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase))
+                      .Select(TrickViewModels.Default)
+                      .FirstOrDefault();
+
 
         //api/tricks/{Id}/submissions
         [HttpGet("{trickId}/submissions")]
@@ -43,17 +50,25 @@ namespace TrickingLibrary.Api.Controllers
 
         //api/tricks
         [HttpPost]
-        public async Task<Trick> Create([FromBody] Trick trick)
+        public async Task<object> Create([FromBody] TrickForm trickForm)
         {
-            trick.Id = trick.Name.Replace(" ", "-").ToLowerInvariant();
+
+            var trick = new Trick
+            {
+                Id = trickForm.Name.Replace(" ", "-").ToLowerInvariant(),
+                Name = trickForm.Name,
+                Description = trickForm.Description,
+                Difficulty = trickForm.Difficulty,
+                TrickCategories = trickForm.Categories.Select(x => new TrickCategory { CategoryId = x }).ToList()
+            };
             _dbContext.Add(trick);
            await  _dbContext.SaveChangesAsync();
-            return trick;
+            return TrickViewModels.Default.Compile().Invoke(trick);
         }
 
         //api/tricks
         [HttpPut]
-        public async Task<Trick> Update([FromBody] Trick trick)
+        public async Task<object> Update([FromBody] Trick trick)
         {
             if(string.IsNullOrEmpty(trick.Id))
             {
@@ -62,7 +77,7 @@ namespace TrickingLibrary.Api.Controllers
 
             _dbContext.Add(trick);
             await _dbContext.SaveChangesAsync();
-            return trick;
+            return TrickViewModels.Default.Compile().Invoke(trick);
         }
 
         //api/tricks/{Id}
